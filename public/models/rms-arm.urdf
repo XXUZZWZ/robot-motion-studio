@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!-- Original teaching asset. Lengths: metres; joint angles: radians; URDF: Z-up. -->
+<robot name="RMS_ARM_06">
+  <material name="orange"><color rgba="0.96 0.37 0.13 1"/></material>
+  <material name="graphite"><color rgba="0.12 0.15 0.18 1"/></material>
+  <material name="metal"><color rgba="0.65 0.70 0.75 1"/></material>
+  <material name="light"><color rgba="0.86 0.89 0.9 1"/></material>
+  <link name="base_link">
+    <visual><origin xyz="0 0 0.055"/><geometry><cylinder radius="0.24" length="0.11"/></geometry><material name="graphite"/></visual>
+    <visual><origin xyz="0 0 0.15"/><geometry><cylinder radius="0.15" length="0.12"/></geometry><material name="metal"/></visual>
+  </link>
+  <joint name="joint_1" type="revolute"><parent link="base_link"/><child link="base_rotor"/><origin xyz="0 0 0.21"/><axis xyz="0 0 1"/><limit lower="-3.14159" upper="3.14159" effort="100" velocity="1"/></joint>
+  <link name="base_rotor">
+    <visual><origin xyz="0 0 0.10"/><geometry><box size="0.27 0.26 0.20"/></geometry><material name="orange"/></visual>
+    <visual><origin xyz="0 0 0.22" rpy="1.5707963 0 0"/><geometry><cylinder radius="0.14" length="0.30"/></geometry><material name="graphite"/></visual>
+    <visual><origin xyz="0 0.158 0.22" rpy="1.5707963 0 0"/><geometry><cylinder radius="0.088" length="0.018"/></geometry><material name="metal"/></visual>
+  </link>
+  <joint name="joint_2" type="revolute"><parent link="base_rotor"/><child link="upper_arm"/><origin xyz="0 0 0.22"/><axis xyz="0 1 0"/><limit lower="-1.8" upper="1.8" effort="100" velocity="1"/></joint>
+  <link name="upper_arm">
+    <visual><origin xyz="0 0 0.35"/><geometry><box size="0.18 0.19 0.70"/></geometry><material name="orange"/></visual>
+    <visual><origin xyz="0.095 0 0.35"/><geometry><box size="0.015 0.13 0.43"/></geometry><material name="light"/></visual>
+    <visual><origin xyz="0 0 0.70" rpy="1.5707963 0 0"/><geometry><cylinder radius="0.12" length="0.25"/></geometry><material name="graphite"/></visual>
+    <visual><origin xyz="0 0.135 0.70" rpy="1.5707963 0 0"/><geometry><cylinder radius="0.07" length="0.018"/></geometry><material name="metal"/></visual>
+  </link>
+  <joint name="joint_3" type="revolute"><parent link="upper_arm"/><child link="forearm"/><origin xyz="0 0 0.70"/><axis xyz="0 1 0"/><limit lower="-2.4" upper="2.4" effort="100" velocity="1"/></joint>
+  <link name="forearm">
+    <visual><origin xyz="0 0 0.29"/><geometry><box size="0.14 0.15 0.58"/></geometry><material name="orange"/></visual>
+    <visual><origin xyz="0.077 0 0.27"/><geometry><box size="0.012 0.10 0.32"/></geometry><material name="light"/></visual>
+    <visual><origin xyz="0 0 0.58"/><geometry><cylinder radius="0.105" length="0.13"/></geometry><material name="graphite"/></visual>
+  </link>
+  <joint name="joint_4" type="revolute"><parent link="forearm"/><child link="wrist_roll"/><origin xyz="0 0 0.63"/><axis xyz="0 0 1"/><limit lower="-3.14159" upper="3.14159" effort="30" velocity="1.5"/></joint>
+  <link name="wrist_roll">
+    <visual><origin xyz="0 0 0.085"/><geometry><cylinder radius="0.09" length="0.17"/></geometry><material name="orange"/></visual>
+    <visual><origin xyz="0 0 0.16" rpy="1.5707963 0 0"/><geometry><cylinder radius="0.09" length="0.21"/></geometry><material name="graphite"/></visual>
+  </link>
+  <joint name="joint_5" type="revolute"><parent link="wrist_roll"/><child link="wrist_pitch"/><origin xyz="0 0 0.16"/><axis xyz="0 1 0"/><limit lower="-1.8" upper="1.8" effort="30" velocity="1.5"/></joint>
+  <link name="wrist_pitch">
+    <visual><origin xyz="0 0 0.075"/><geometry><cylinder radius="0.067" length="0.15"/></geometry><material name="orange"/></visual>
+  </link>
+  <joint name="joint_6" type="revolute"><parent link="wrist_pitch"/><child link="tool_flange"/><origin xyz="0 0 0.15"/><axis xyz="0 0 1"/><limit lower="-3.14159" upper="3.14159" effort="20" velocity="2"/></joint>
+  <link name="tool_flange">
+    <visual><origin xyz="0 0 0.025"/><geometry><cylinder radius="0.075" length="0.05"/></geometry><material name="metal"/></visual>
+    <visual><origin xyz="0 0 0.075"/><geometry><box size="0.16 0.065 0.07"/></geometry><material name="graphite"/></visual>
+    <visual><origin xyz="0.065 0 0.15"/><geometry><box size="0.025 0.05 0.12"/></geometry><material name="metal"/></visual>
+    <visual><origin xyz="-0.065 0 0.15"/><geometry><box size="0.025 0.05 0.12"/></geometry><material name="metal"/></visual>
+  </link>
+  <joint name="tool_fixed" type="fixed"><parent link="tool_flange"/><child link="tool_tip"/><origin xyz="0 0 0.20"/></joint>
+  <link name="tool_tip"/>
+</robot>

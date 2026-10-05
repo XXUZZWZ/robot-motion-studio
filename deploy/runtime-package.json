@@ -1,0 +1,6 @@
+{
+  "name": "robot-motion-simulator",
+  "private": true,
+  "type": "module",
+  "dependencies": { "ws": "8.22.0" }
+}

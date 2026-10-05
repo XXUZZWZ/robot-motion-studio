@@ -1,0 +1,12 @@
+{
+  "modelId": "rms-arm-6",
+  "name": "RMS ARM / 06",
+  "joints": [
+    { "id": "joint_1", "name": "底座旋转", "axis": "Z", "lower": -3.14159, "upper": 3.14159, "home": 0.35 },
+    { "id": "joint_2", "name": "肩部俯仰", "axis": "Y", "lower": -1.8, "upper": 1.8, "home": 0.6 },
+    { "id": "joint_3", "name": "肘部俯仰", "axis": "Y", "lower": -2.4, "upper": 2.4, "home": -1.1 },
+    { "id": "joint_4", "name": "腕部旋转", "axis": "Z", "lower": -3.14159, "upper": 3.14159, "home": 0 },
+    { "id": "joint_5", "name": "腕部俯仰", "axis": "Y", "lower": -1.8, "upper": 1.8, "home": 0.5 },
+    { "id": "joint_6", "name": "工具旋转", "axis": "Z", "lower": -3.14159, "upper": 3.14159, "home": 0 }
+  ]
+}

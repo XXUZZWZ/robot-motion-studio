@@ -1,0 +1,47 @@
+import { chromium } from 'playwright';
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+const base = process.env.BASE_URL || 'http://121.43.109.134';
+await mkdir('artifacts/deployment', { recursive:true });
+const browser = await chromium.launch({channel:'msedge',headless:true,args:['--enable-unsafe-swiftshader']});
+const page = await browser.newPage({viewport:{width:1440,height:1000}});
+const errors=[], failed=[], checks=[];
+page.on('pageerror',e=>errors.push(e.message));
+page.on('response',r=>{if(r.status()>=400) failed.push(`${r.status()} ${r.url()}`);});
+try {
+  await page.goto(base,{waitUntil:'networkidle',timeout:60000});
+  await page.waitForFunction(()=>Number(document.querySelector('output')?.textContent?.replace('%',''))>0);
+  await page.getByRole('button',{name:'暂停书写',exact:true}).click();
+  await page.getByLabel('书写进度',{exact:true}).fill('1');
+  await page.waitForTimeout(1400);
+  await page.screenshot({path:'artifacts/deployment/home.png'});
+  checks.push('public HTTP home and WebGL writing');
+  await page.getByRole('link',{name:'动作工作台',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('.viewport-info')?.textContent?.includes('模型已就绪'));
+  assert.equal(await page.getByLabel('WebSocket 地址',{exact:true}).inputValue(),base.replace('http','ws')+'/ws');
+  checks.push('static route navigation and URDF load');
+  await page.getByLabel('播放位置',{exact:true}).fill('3');
+  await page.getByRole('button',{name:'记录姿态',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('.timeline-title')?.textContent?.includes('6 个关键帧'));
+  checks.push('new keyframe works on non-secure HTTP origin');
+  await page.getByRole('button',{name:'连接模拟设备',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('.mode-badge')?.textContent?.includes('实时监看'));
+  const angle=await page.getByLabel('肩部俯仰角度数值',{exact:true}).inputValue();
+  await page.waitForTimeout(600);
+  assert.notEqual(await page.getByLabel('肩部俯仰角度数值',{exact:true}).inputValue(),angle);
+  await page.screenshot({path:'artifacts/deployment/studio-live.png'});
+  await page.getByRole('button',{name:'断开连接',exact:true}).click();
+  checks.push('public same-origin WebSocket drives live joints');
+  await page.reload({waitUntil:'networkidle'});
+  await page.waitForFunction(()=>document.querySelector('.viewport-info')?.textContent?.includes('模型已就绪'));
+  checks.push('direct studio refresh');
+  await page.getByRole('link',{name:'首页',exact:true}).click();
+  await page.getByRole('heading',{name:'从想象，到运动。'}).waitFor();
+  checks.push('client navigation back to home');
+  const nav=await page.request.get(base+'/nav/'); assert.equal(nav.status(),200);
+  checks.push('previous navigation site preserved');
+  assert.deepEqual(errors,[]); assert.deepEqual(failed,[]);
+  await writeFile('artifacts/deployment/checks.json',JSON.stringify({base,checks,errors,failed},null,2));
+  console.log(JSON.stringify({base,checks,errors,failed},null,2));
+} catch(e) { console.error(e); console.error({errors,failed}); await page.screenshot({path:'artifacts/deployment/failure.png'}); process.exitCode=1; }
+finally {await Promise.race([browser.close(),new Promise(r=>setTimeout(r,4000))]);process.exit(process.exitCode||0);}

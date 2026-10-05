@@ -1,0 +1,9 @@
+packages:
+  - '.'
+overrides:
+  '@types/three': '0.186.0'
+  use-sync-external-store: '^1.4.0'
+allowBuilds:
+  esbuild: true
+  sharp: true
+  '@tailwindcss/oxide': true

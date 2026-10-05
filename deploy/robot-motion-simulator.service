@@ -1,0 +1,23 @@
+[Unit]
+Description=Robot Motion Studio telemetry simulator
+After=network.target
+
+[Service]
+Type=simple
+User=robot-motion
+Group=robot-motion
+WorkingDirectory=/opt/robot-motion-studio/current
+ExecStart=/usr/bin/node /opt/robot-motion-studio/current/server/simulator.mjs
+Environment=NODE_ENV=production
+Environment=SIM_PORT=3101
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+MemoryMax=128M
+
+[Install]
+WantedBy=multi-user.target
